@@ -14,15 +14,37 @@
     html, body { margin: 0; height: 100%; overflow: hidden; font-family: Tahoma, "Segoe UI", Arial, sans-serif; }
     #start {
       position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; align-items: center;
-      justify-content: center; text-align: center; padding: 24px; color: #fff;
+      justify-content: center; text-align: center; padding: 18px 20px; color: #fff; overflow-y: auto;
       background: linear-gradient(#8fd3ff, #1f7fc4);
     }
-    #start h1 { font-size: 2.1rem; margin: 0 0 8px; }
-    #start p { font-size: 1.08rem; max-width: 32rem; line-height: 1.9; margin: 6px 0; }
-    #start button {
-      margin-top: 20px; font: inherit; font-size: 1.3rem; font-weight: bold; color: #1f5f99;
-      background: #fff; border: 0; border-radius: 999px; padding: 14px 40px; cursor: pointer;
+    #start h1 { font-size: 1.9rem; margin: 6px 0 2px; text-shadow: 0 2px 0 rgba(0,0,0,.15); }
+    .hero { position: relative; width: min(62vw, 250px); }
+    .hero img { width: 100%; display: block; animation: bob 2.4s ease-in-out infinite; }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .bubble {
+      position: relative; display: inline-block; margin: 10px 0 12px; background: #fff; color: #0b5a99; font-weight: bold;
+      font-size: .98rem; line-height: 1.6; padding: 8px 14px; border-radius: 18px; box-shadow: 0 4px 0 rgba(0,0,0,.12);
     }
+    .bubble::after {
+      content: ""; position: absolute; bottom: -10px; inset-inline-start: 26px;   /* points down at the camera she holds */
+      border: 10px solid transparent; border-top-color: #fff; border-bottom: 0;
+    }
+    .steps { list-style: none; margin: 14px 0 0; padding: 0; width: min(92vw, 360px); text-align: start; }
+    .steps li {
+      display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,.2); border-radius: 14px;
+      padding: 9px 14px; margin: 7px 0; font-size: 1.05rem; font-weight: bold; line-height: 1.6;
+    }
+    .steps b {
+      flex: none; width: 34px; height: 34px; border-radius: 50%; background: #fff; color: #1f6fb0;
+      display: grid; place-items: center; font-size: 1.1rem;
+    }
+    #start button {
+      margin-top: 14px; font: inherit; font-size: 1.35rem; font-weight: bold; color: #fff; background: #ff8a1f;
+      border: 0; border-radius: 999px; padding: 14px 38px; cursor: pointer; box-shadow: 0 5px 0 #c9620a;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+    @media (max-height: 640px) { .hero { width: min(40vw, 170px); } #start h1 { font-size: 1.5rem; } }
     #hint {
       position: fixed; left: 0; right: 0; bottom: 18px; z-index: 20; text-align: center; pointer-events: none;
     }
@@ -35,10 +57,17 @@
 <body>
 
 <div id="start">
-  <h1>قطّورة بالواقع المعزز</h1>
-  <p>وجّه كاميرا الجهاز إلى بطاقة قطّورة، وشاهد التبخر يحدث فوقها.</p>
-  <p>سيطلب المتصفح الإذن باستخدام الكاميرا. اختر «سماح».</p>
-  <button id="startBtn" type="button">افتح الكاميرا</button>
+  <h1>اكتشف الرحلة مع قطّورة</h1>
+  <div class="bubble">افتح الكاميرا واضغط «سماح»</div>
+  <div class="hero">
+    <img src="qattoura-camera.png" alt="قطّورة ترفع كاميرا">
+  </div>
+  <ol class="steps">
+    <li><b>١</b><span>اضغط زر «افتح الكاميرا»</span></li>
+    <li><b>٢</b><span>اضغط «سماح» لتفعيل الكاميرا</span></li>
+    <li><b>٣</b><span>وجّه الكاميرا إلى بطاقة قطّورة</span></li>
+  </ol>
+  <button id="startBtn" type="button">📷 افتح الكاميرا</button>
 </div>
 <div id="hint" hidden><span id="hintText">وجّه الكاميرا إلى البطاقة</span></div>
 
