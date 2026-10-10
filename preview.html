@@ -34,7 +34,7 @@
 </a-scene>
 <script>
   var sc = document.querySelector('a-scene');
-  sc.addEventListener('loaded', function () { buildQattouraCard(document.getElementById('stage')); });
+  sc.addEventListener('loaded', function () { window.story = buildQattouraCard(document.getElementById('stage')); setTimeout(window.story.play, 1500); });
   // Drag to orbit around the card
   var pivot = document.getElementById('pivot'), down = null, rot = { x: -32, y: 0 };
   function pt(e) { return e.touches ? e.touches[0] : e; }

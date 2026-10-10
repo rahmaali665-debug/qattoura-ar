@@ -73,55 +73,95 @@ AFRAME.registerComponent('model-opacity', {
   }
 });
 
-/* Builds the whole evaporation scene inside the given parent entity. */
+/* Builds the evaporation story inside the given parent entity and returns { play, reset }.
+   Order: the sun, the red heat arrows pointing at the sea, Qattoura, Qattoura rising with the
+   blue arrows while turning into vapour, and last the cloud. */
 function buildQattouraCard(parent) {
   function add(html) { parent.insertAdjacentHTML('beforeend', html); }
+  function $(id) { return parent.querySelector('#' + id); }
+  function vis(id, on) { var e = $(id); e.setAttribute('visible', on); e.object3D.visible = on; }
 
-  // Light, so the models are not flat
   add('<a-entity light="type: ambient; intensity: 1.0; color: #ffffff"></a-entity>');
   add('<a-entity light="type: directional; intensity: 1.1; color: #fff3d0" position="-0.4 -0.6 1"></a-entity>');
 
-  // The sun, floating above its place in the picture
-  add('<a-entity position="-0.33 0.16 0.46" rotation="90 0 0">' +
+  // 1. The sun
+  add('<a-entity id="q-sun" visible="false" position="-0.33 0.16 0.46" rotation="90 0 0">' +
         '<a-entity gltf-model="#m-sun" scale="0.082 0.082 0.082" animation-mixer="clip: *; loop: repeat"' +
         ' animation="property: position; from: 0 0 0; to: 0 0.02 0; dur: 1800; dir: alternate; loop: true; easing: easeInOutSine"></a-entity>' +
       '</a-entity>');
 
-  // Heat going down from the sun to the sea
-  add('<a-entity position="-0.24 0.06 0.32" rotation="90 0 0">' +
+  // 2. Red heat arrows, from the sun down to the sea
+  add('<a-entity id="q-heat" visible="false" position="-0.24 0.06 0.32" rotation="90 0 0">' +
         '<a-entity gltf-model="#m-heat" scale="0.105 0.105 0.105" rotation="-12 0 -14" animation-mixer="clip: *; loop: repeat"></a-entity>' +
       '</a-entity>');
 
-  // Qattoura, the water drop, standing in the sea
-  add('<a-entity position="-0.13 -0.1 0.12" rotation="90 0 0">' +
-        '<a-entity gltf-model="#m-drop" scale="0.1 0.1 0.1" rotation="0 12 0" animation-mixer="clip: *; loop: repeat"></a-entity>' +
+  // 3. Qattoura, the water drop
+  add('<a-entity id="q-drop" visible="false" position="-0.13 -0.1 0.12" rotation="90 0 0">' +
+        '<a-entity id="q-drop-model" gltf-model="#m-drop" scale="0.1 0.1 0.1" rotation="0 12 0" model-opacity="1" animation-mixer="clip: *; loop: repeat"></a-entity>' +
       '</a-entity>');
 
-  // Water vapour rising: faint, because real water vapour cannot be seen
-  [[0.14, -0.02, 0, 1.0], [0.27, 0.05, 900, 1.25], [0.39, -0.04, 1800, 0.9]].forEach(function (w) {
-    add('<a-entity position="' + w[0] + ' ' + w[1] + ' 0.02" rotation="90 0 0">' +
+  // 4. Faint vapour and the blue arrows that show the direction: upward
+  add('<a-entity id="q-vapour" visible="false">' +
+    [[0.14, -0.02, 0, 1.0], [0.27, 0.05, 900, 1.25], [0.39, -0.04, 1800, 0.9], [-0.1, -0.06, 500, 0.8]].map(function (w) {
+      return '<a-entity position="' + w[0] + ' ' + w[1] + ' 0.02" rotation="90 0 0">' +
           '<a-entity gltf-model="#m-wisp" scale="' + (0.15 * w[3]) + ' ' + (0.17 * w[3]) + ' ' + (0.15 * w[3]) + '" model-opacity="0"' +
           ' animation__rise="property: position; from: 0 0 0; to: 0 0.26 0; dur: 3600; delay: ' + w[2] + '; loop: true; easing: linear"' +
           ' animation__in="property: model-opacity; from: 0; to: 0.6; dur: 1200; delay: ' + w[2] + '; loop: true; easing: easeOutQuad"' +
           ' animation__out="property: model-opacity; from: 0.6; to: 0; dur: 2400; delay: ' + (w[2] + 1200) + '; loop: true; easing: easeInQuad"></a-entity>' +
-        '</a-entity>');
-  });
-
-  // Arrows showing the direction: upward
-  add('<a-entity position="0.27 0.14 0.14" rotation="90 0 0">' +
-        '<a-entity gltf-model="#m-up" scale="0.13 0.13 0.13" model-opacity="0.9"' +
-        ' animation__rise="property: position; from: 0 0 0; to: 0 0.2 0; dur: 2600; loop: true; easing: easeInOutSine"' +
-        ' animation__fade="property: model-opacity; from: 0.95; to: 0.1; dur: 2600; loop: true; easing: easeInQuad"></a-entity>' +
+        '</a-entity>';
+    }).join('') + '</a-entity>');
+  add('<a-entity id="q-up" visible="false" position="0.06 -0.04 0.16" rotation="90 0 0">' +
+        '<a-entity gltf-model="#m-up" scale="0.14 0.14 0.14" model-opacity="0.9"' +
+        ' animation__rise="property: position; from: 0 0 0; to: 0 0.22 0; dur: 2200; loop: true; easing: easeInOutSine"' +
+        ' animation__fade="property: model-opacity; from: 0.95; to: 0.15; dur: 2200; loop: true; easing: easeInQuad"></a-entity>' +
       '</a-entity>');
 
-  // A cloud high above, where the vapour is heading
-  add('<a-entity position="0.3 0.2 0.72" rotation="90 0 0">' +
-        '<a-entity gltf-model="#m-cloud" scale="0.12 0.12 0.12"' +
-        ' animation="property: position; from: -0.03 0 0; to: 0.03 0 0; dur: 5000; dir: alternate; loop: true; easing: easeInOutSine"></a-entity>' +
+  // 5. The cloud, last
+  add('<a-entity id="q-cloud" visible="false" position="0.04 0.16 0.8" rotation="90 0 0">' +
+        '<a-entity gltf-model="#m-cloud" scale="0.15 0.15 0.15"' +
+        ' animation="property: position; from: -0.02 0 0; to: 0.02 0 0; dur: 5000; dir: alternate; loop: true; easing: easeInOutSine"></a-entity>' +
       '</a-entity>');
 
-  // Arabic labels, standing up and facing the pupil
-  add('<a-entity position="0 0.31 0.9" rotation="65 0 0" ar-text="value: التبخر; width: 0.34; size: 150; bg: rgba(11,111,184,0.96); color: #ffffff"></a-entity>');
-  add('<a-entity position="-0.3 -0.02 0.72" rotation="65 0 0" ar-text="value: الشمس تسخّن|ماء البحر; width: 0.3; size: 96; bg: rgba(255,236,170,0.96); color: #6b3d00; border: #ffb400"></a-entity>');
-  add('<a-entity position="0.3 -0.16 0.5" rotation="65 0 0" ar-text="value: يتحول الماء السائل|إلى بخار ماء يصعد|إلى أعلى; width: 0.34; size: 92; bg: rgba(235,247,255,0.96); color: #0b3d63; border: #5aa9e6"></a-entity>');
+  // Arabic labels, tilted back so they can be read from the front and from above
+  add('<a-entity id="q-title" position="0.36 0.3 0.5" rotation="65 0 0" ar-text="value: التبخر; width: 0.26; size: 150; bg: rgba(11,111,184,0.96); color: #ffffff"></a-entity>');
+  add('<a-entity id="q-label-sun" visible="false" position="-0.34 -0.02 0.74" rotation="65 0 0" ar-text="value: الشمس تسخّن|ماء البحر; width: 0.3; size: 96; bg: rgba(255,236,170,0.96); color: #6b3d00; border: #ffb400"></a-entity>');
+  add('<a-entity id="q-label-vapour" visible="false" position="0.34 -0.18 0.36" rotation="65 0 0" ar-text="value: يتحول الماء السائل|إلى بخار ماء يصعد|إلى أعلى; width: 0.34; size: 92; bg: rgba(235,247,255,0.96); color: #0b3d63; border: #5aa9e6"></a-entity>');
+
+  var STEPS = ['q-sun', 'q-heat', 'q-drop', 'q-vapour', 'q-up', 'q-cloud', 'q-label-sun', 'q-label-vapour'];
+  var timers = [];
+  function later(ms, fn) { timers.push(setTimeout(fn, ms)); }
+  function pop(id, dur) {
+    var e = $(id);
+    vis(id, true);
+    e.removeAttribute('animation__pop');
+    e.setAttribute('scale', '0.01 0.01 0.01');
+    e.setAttribute('animation__pop', { property: 'scale', from: '0.01 0.01 0.01', to: '1 1 1', dur: dur || 800, easing: 'easeOutBack' });
+  }
+
+  function reset() {
+    timers.forEach(clearTimeout); timers = [];
+    STEPS.forEach(function (id) { vis(id, false); $(id).removeAttribute('animation__pop'); });
+    var d = $('q-drop');
+    d.removeAttribute('animation__fly');
+    d.setAttribute('position', '-0.13 -0.1 0.12');
+    $('q-drop-model').removeAttribute('animation__vap');
+    $('q-drop-model').setAttribute('model-opacity', 1);
+  }
+
+  function play() {
+    reset();
+    later(300, function () { pop('q-sun', 900); });                         // 1. the sun
+    later(1500, function () { pop('q-label-sun', 500); });
+    later(2600, function () { vis('q-heat', true); });                      // 2. red arrows to the sea
+    later(5600, function () { pop('q-drop', 800); });                       // 3. Qattoura
+    later(8600, function () {                                               // 4. she rises with the blue arrows
+      vis('q-vapour', true); vis('q-up', true); pop('q-label-vapour', 500);
+      $('q-drop').setAttribute('animation__fly', { property: 'position', to: '0.02 0.1 0.66', dur: 4600, easing: 'easeInOutSine' });
+      $('q-drop-model').setAttribute('animation__vap', { property: 'model-opacity', from: 1, to: 0.32, dur: 4600, easing: 'easeInQuad' });
+    });
+    later(13400, function () { pop('q-cloud', 1100); });                    // 5. the cloud
+    later(21000, play);                                                     // then tell the story again
+  }
+
+  return { play: play, reset: reset };
 }

@@ -65,7 +65,8 @@
   var hint = document.getElementById('hint');
   var hintText = document.getElementById('hintText');
 
-  scene.addEventListener('loaded', function () { buildQattouraCard(document.getElementById('stage')); });
+  var story = null;
+  scene.addEventListener('loaded', function () { story = buildQattouraCard(document.getElementById('stage')); });
 
   document.getElementById('startBtn').addEventListener('click', function () {
     document.getElementById('start').style.display = 'none';
@@ -75,8 +76,9 @@
   scene.addEventListener('arError', function () {
     hintText.textContent = 'تعذّر فتح الكاميرا. اسمح باستخدامها ثم أعد تحميل الصفحة.';
   });
-  target.addEventListener('targetFound', function () { hint.hidden = true; });
+  target.addEventListener('targetFound', function () { hint.hidden = true; if (story) { story.play(); } });
   target.addEventListener('targetLost', function () {
+    if (story) { story.reset(); }
     hintText.textContent = 'وجّه الكاميرا إلى البطاقة'; hint.hidden = false;
   });
 </script>
