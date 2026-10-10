@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>قطّورة بالواقع المعزز: التبخر</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <script src="ar-content.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #000; font-family: Tahoma, "Segoe UI", Arial, sans-serif; }
+    #start {
+      position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center; padding: 24px; color: #fff;
+      background: linear-gradient(#8fd3ff, #1f7fc4);
+    }
+    #start h1 { font-size: 2.1rem; margin: 0 0 8px; }
+    #start p { font-size: 1.08rem; max-width: 32rem; line-height: 1.9; margin: 6px 0; }
+    #start button {
+      margin-top: 20px; font: inherit; font-size: 1.3rem; font-weight: bold; color: #1f5f99;
+      background: #fff; border: 0; border-radius: 999px; padding: 14px 40px; cursor: pointer;
+    }
+    #hint {
+      position: fixed; left: 0; right: 0; bottom: 18px; z-index: 20; text-align: center; pointer-events: none;
+    }
+    #hint span {
+      display: inline-block; background: rgba(11,111,184,.92); color: #fff; font-weight: bold;
+      font-size: 1.05rem; padding: 10px 22px; border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="start">
+  <h1>قطّورة بالواقع المعزز</h1>
+  <p>وجّه كاميرا الجهاز إلى بطاقة قطّورة، وشاهد التبخر يحدث فوقها.</p>
+  <p>سيطلب المتصفح الإذن باستخدام الكاميرا. اختر «سماح».</p>
+  <button id="startBtn" type="button">افتح الكاميرا</button>
+</div>
+<div id="hint" hidden><span id="hintText">وجّه الكاميرا إلى البطاقة</span></div>
+
+<a-scene id="scene"
+         mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiScanning: no; uiLoading: no; filterMinCF: 0.0005; filterBeta: 0.01"
+         color-space="sRGB" renderer="colorManagement: true; antialias: true"
+         vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+  <a-assets timeout="20000">
+    <a-asset-item id="m-sun" src="models/sun.glb"></a-asset-item>
+    <a-asset-item id="m-drop" src="models/qattoura.glb"></a-asset-item>
+    <a-asset-item id="m-heat" src="models/heat-arrows.glb"></a-asset-item>
+    <a-asset-item id="m-up" src="models/up-arrows.glb"></a-asset-item>
+    <a-asset-item id="m-wisp" src="models/wisp.glb"></a-asset-item>
+    <a-asset-item id="m-cloud" src="models/cloud.glb"></a-asset-item>
+  </a-assets>
+
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <a-entity id="target" mindar-image-target="targetIndex: 0">
+    <a-entity id="stage"></a-entity>
+  </a-entity>
+</a-scene>
+
+<script>
+  var scene = document.getElementById('scene');
+  var target = document.getElementById('target');
+  var hint = document.getElementById('hint');
+  var hintText = document.getElementById('hintText');
+
+  scene.addEventListener('loaded', function () { buildQattouraCard(document.getElementById('stage')); });
+
+  document.getElementById('startBtn').addEventListener('click', function () {
+    document.getElementById('start').style.display = 'none';
+    hint.hidden = false;
+    scene.systems['mindar-image-system'].start();
+  });
+  scene.addEventListener('arError', function () {
+    hintText.textContent = 'تعذّر فتح الكاميرا. اسمح باستخدامها ثم أعد تحميل الصفحة.';
+  });
+  target.addEventListener('targetFound', function () { hint.hidden = true; });
+  target.addEventListener('targetLost', function () {
+    hintText.textContent = 'وجّه الكاميرا إلى البطاقة'; hint.hidden = false;
+  });
+</script>
+</body>
+</html>

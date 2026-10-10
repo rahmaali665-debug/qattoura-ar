@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>معاينة بطاقة قطّورة (بلا كاميرا)</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+  <script src="ar-content.js"></script>
+  <style> body { margin: 0; } </style>
+</head>
+<body>
+<!-- Shows the same AR content on a picture of the card, so it can be checked without a camera. -->
+<a-scene color-space="sRGB" renderer="colorManagement: true; antialias: true" vr-mode-ui="enabled: false" background="color: #d9c9a8">
+  <a-assets timeout="20000">
+    <img id="card" src="card.jpg">
+    <a-asset-item id="m-sun" src="models/sun.glb"></a-asset-item>
+    <a-asset-item id="m-drop" src="models/qattoura.glb"></a-asset-item>
+    <a-asset-item id="m-heat" src="models/heat-arrows.glb"></a-asset-item>
+    <a-asset-item id="m-up" src="models/up-arrows.glb"></a-asset-item>
+    <a-asset-item id="m-wisp" src="models/wisp.glb"></a-asset-item>
+    <a-asset-item id="m-cloud" src="models/cloud.glb"></a-asset-item>
+  </a-assets>
+
+  <!-- The card lies flat on a table: card z (up) becomes world y -->
+  <a-entity id="table" rotation="-90 0 0">
+    <a-plane src="#card" width="1" height="0.6667" material="shader: flat"></a-plane>
+    <a-entity id="stage"></a-entity>
+  </a-entity>
+
+  <a-entity id="pivot" position="0 0.3 0" rotation="-32 0 0">
+    <a-camera position="0 0 1.55" look-controls="enabled: false" wasd-controls-enabled="false" fov="50"></a-camera>
+  </a-entity>
+</a-scene>
+<script>
+  var sc = document.querySelector('a-scene');
+  sc.addEventListener('loaded', function () { buildQattouraCard(document.getElementById('stage')); });
+  // Drag to orbit around the card
+  var pivot = document.getElementById('pivot'), down = null, rot = { x: -32, y: 0 };
+  function pt(e) { return e.touches ? e.touches[0] : e; }
+  function start(e) { down = { x: pt(e).clientX, y: pt(e).clientY, rx: rot.x, ry: rot.y }; }
+  function move(e) {
+    if (!down) { return; }
+    rot.y = down.ry - (pt(e).clientX - down.x) * 0.4;
+    rot.x = Math.max(-88, Math.min(-5, down.rx - (pt(e).clientY - down.y) * 0.3));
+    pivot.setAttribute('rotation', rot.x + ' ' + rot.y + ' 0');
+  }
+  function end() { down = null; }
+  window.addEventListener('mousedown', start); window.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+  window.addEventListener('touchstart', start); window.addEventListener('touchmove', move); window.addEventListener('touchend', end);
+  window.setView = function (x, y) { rot.x = x; rot.y = y; pivot.setAttribute('rotation', x + ' ' + y + ' 0'); };
+</script>
+</body>
+</html>
