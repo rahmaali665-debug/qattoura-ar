@@ -9,7 +9,9 @@
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <script src="ar-content.js"></script>
   <style>
-    html, body { margin: 0; height: 100%; overflow: hidden; background: #000; font-family: Tahoma, "Segoe UI", Arial, sans-serif; }
+    /* No background on body: it would be painted over the camera video, which MindAR puts at a negative z-index. */
+    html { background: #000; }
+    html, body { margin: 0; height: 100%; overflow: hidden; font-family: Tahoma, "Segoe UI", Arial, sans-serif; }
     #start {
       position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; align-items: center;
       justify-content: center; text-align: center; padding: 24px; color: #fff;
@@ -71,6 +73,10 @@
   document.getElementById('startBtn').addEventListener('click', function () {
     document.getElementById('start').style.display = 'none';
     hint.hidden = false;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      hintText.textContent = 'هذا المتصفح لا يفتح الكاميرا. افتح الرابط في Safari أو Chrome.';
+      return;
+    }
     scene.systems['mindar-image-system'].start();
   });
   scene.addEventListener('arError', function () {
