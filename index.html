@@ -19,13 +19,13 @@
       padding: 10px 16px clamp(14px, 2.6vh, 26px); gap: clamp(10px, 1.8vh, 18px);
       /* --bottom: room taken by the steps and the button under Qattoura's feet */
       --bottom: 250px;
-      /* --h: height of the Qattoura picture. The tilted sign above her hand adds about 30% more. */
-      --h: min(calc((100vh - var(--bottom)) / 1.3), 46vw);
+      /* --h: height of the Qattoura picture. The tilted sign beside her head adds about 15% more, and her feet reach a little into the steps row. */
+      --h: min(calc((100vh - var(--bottom)) / 1.11), 50vw);
     }
     /* calm sea along the bottom; its first wave reaches over Qattoura's feet */
     .sea {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; pointer-events: none; overflow: hidden;
-      height: calc((var(--bottom) - 22px) / .767);
+      height: calc((var(--bottom) - 22px - var(--h) * .04) / .767);
     }
     .sea svg { position: absolute; left: 0; bottom: 0; width: 200%; height: 100%; }
     .sea .w1 { animation: drift 26s linear infinite; }
@@ -36,9 +36,9 @@
     @keyframes sway { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 
     .hero {
-      position: relative; z-index: 2; direction: ltr; height: calc(var(--h) * 1.3);
+      position: relative; z-index: 2; direction: ltr; height: calc(var(--h) * 1.15); margin-bottom: calc(var(--h) * -.04);
       /* room on the left for the sign that leans out past her raised hand */
-      padding-left: calc(var(--h) * .9); padding-right: calc(var(--h) * .04);
+      padding-left: calc(var(--h) * .8); padding-right: calc(var(--h) * .04);
       display: flex; align-items: flex-end;
     }
     /* a little wider than the original drawing, as asked */
@@ -48,14 +48,14 @@
     .sign { position: absolute; z-index: 1; left: 7.6%; top: 27%; width: 0; height: 0; transform: rotate(-8deg); transform-origin: 0 0; }
     .sign .stick {
       position: absolute; left: calc(var(--h) * -.024); bottom: 0; width: calc(var(--h) * .048);
-      height: calc(var(--h) * .15); border-radius: 8px; background: linear-gradient(90deg, #b5773a, #e8b072, #a8692f);
+      height: calc(var(--h) * .07); border-radius: 8px; background: linear-gradient(90deg, #b5773a, #e8b072, #a8692f);
     }
     .sign .board {
-      position: absolute; bottom: calc(var(--h) * .13); left: 0; transform: translateX(-85%);
-      width: calc(var(--h) * .95); padding: calc(var(--h) * .04) calc(var(--h) * .05);
+      position: absolute; bottom: calc(var(--h) * .03); left: 0; transform: translateX(-85%);
+      width: calc(var(--h) * .9); padding: calc(var(--h) * .04) calc(var(--h) * .05);
       background: #fffdf3; color: #0b4f8a; border: calc(var(--h) * .022) solid #f6a623; border-radius: calc(var(--h) * .07);
       box-shadow: 0 8px 0 rgba(0,0,0,.18); font-weight: 900; line-height: 1.22; margin: 0; direction: rtl;
-      font-size: calc(var(--h) * .12);
+      font-size: calc(var(--h) * .105);
     }
     .sign .board span { display: block; }
     /* the camera in her left hand is a button too, with a blue glow that pulses but does not move */
