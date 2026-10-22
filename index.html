@@ -51,13 +51,14 @@
       height: calc(var(--h) * .07); border-radius: 8px; background: linear-gradient(90deg, #b5773a, #e8b072, #a8692f);
     }
     .sign .board {
-      position: absolute; bottom: calc(var(--h) * .03); left: 0; transform: translateX(-85%);
-      width: calc(var(--h) * .9); padding: calc(var(--h) * .04) calc(var(--h) * .05);
+      position: absolute; bottom: calc(var(--h) * .06); left: 0; transform: translateX(-98%);
+      width: calc(var(--h) * .78); padding: calc(var(--h) * .04) calc(var(--h) * .05);
       background: #fffdf3; color: #0b4f8a; border: calc(var(--h) * .022) solid #f6a623; border-radius: calc(var(--h) * .07);
       box-shadow: 0 8px 0 rgba(0,0,0,.18); font-weight: 900; line-height: 1.22; margin: 0; direction: rtl; text-align: center;
-      font-size: calc(var(--h) * .105);
+      font-size: calc(var(--h) * .09);
     }
-    .sign .board span { display: block; }
+    .sign .board span { display: block; white-space: nowrap; }
+    .sign .board .big { font-size: 1.3em; }
     /* the camera in her left hand is a button too, with a blue glow that pulses but does not move */
     .cam-btn {
       position: absolute; z-index: 3; left: 63%; top: 3%; width: 37%; aspect-ratio: 1.15; border-radius: 50%;
@@ -159,7 +160,7 @@
     <div class="pic">
       <div class="sign">
         <div class="stick"></div>
-        <h1 class="board"><span>اكتشف الرحلة</span><span>مع قطّورة</span></h1>
+        <h1 class="board"><span class="big">اكتشف</span><span>الرحلة مع قطّورة</span></h1>
       </div>
       <img src="qattoura-camera.png" alt="قطّورة تحمل لافتة وكاميرا">
       <button class="cam-btn" id="camBtn" type="button" aria-label="افتح الكاميرا"></button>
