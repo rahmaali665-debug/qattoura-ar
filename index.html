@@ -22,18 +22,18 @@
       /* --h: height of the Qattoura picture. The tilted sign beside her head adds about 15% more, and her feet reach a little into the steps row. */
       --h: min(calc((100vh - var(--bottom)) / 1.11), 50vw);
     }
-    /* calm sea along the bottom; its first wave reaches over Qattoura's feet */
+    /* calm sea along the bottom; its first wave reaches up to Qattoura's legs */
     .sea {
       position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; pointer-events: none; overflow: hidden;
-      height: calc((var(--bottom) - 22px - var(--h) * .04) / .767);
+      height: calc((var(--bottom) - 22px + var(--h) * .06) / .767);
     }
     .sea svg { position: absolute; left: 0; bottom: 0; width: 200%; height: 100%; }
-    .sea .w1 { animation: drift 26s linear infinite; }
-    .sea .w2 { animation: drift 18s linear infinite reverse; }
-    .sea .w3 { animation: drift 12s linear infinite; }
+    .sea .w1 { animation: drift 14s linear infinite; }
+    .sea .w2 { animation: drift 10s linear infinite reverse; }
+    .sea .w3 { animation: drift 7s linear infinite; }
     @keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    .sea .sway { animation: sway 5s ease-in-out infinite; }
-    @keyframes sway { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+    .sea .sway { animation: sway 3.5s ease-in-out infinite; }
+    @keyframes sway { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(14px); } }
 
     .hero {
       position: relative; z-index: 2; direction: ltr; height: calc(var(--h) * 1.15); margin-bottom: calc(var(--h) * -.04);
